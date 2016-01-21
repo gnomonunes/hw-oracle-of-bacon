@@ -55,14 +55,13 @@ class OracleOfBacon
   end
 
   def make_uri_from_arguments
-    # your code here: set the @uri attribute to properly-escaped URI
-    #   constructed from the @from, @to, @api_key arguments
+    @uri = "http://oracleofbacon.org/cgi-bin/xml?p=#{@api_key}&a=#{CGI.escape(@from)}&b=#{CGI.escape(@to)}"
   end
 
 
   class Response
     attr_reader :type, :data
-    # create a Response object from a string of XML markup.
+
     def initialize(xml)
       @doc = Nokogiri::XML(xml)
       parse_response
@@ -83,14 +82,9 @@ class OracleOfBacon
 
     end
 
-    def handle_unknown_response
-      @type = :unknown
-      @data = '/unknown/i'
-    end
-
-    def parse_spellcheck_response
-      @type = :spellcheck
-      @data = @doc.xpath('/spellcheck/*').collect { |node| node.text }
+    def parse_error_response
+      @type = :error
+      @data = 'Unauthorized access'
     end
 
     def parse_graph_response
@@ -98,9 +92,15 @@ class OracleOfBacon
       @data = @doc.xpath('/link/*').collect { |node| node.text }
     end
 
-    def parse_error_response
-      @type = :error
-      @data = 'Unauthorized access'
+    def parse_spellcheck_response
+      @type = :spellcheck
+      @data = @doc.xpath('/spellcheck/*').collect { |node| node.text }
     end
+
+    def handle_unknown_response
+      @type = :unknown
+      @data = '/unknown/i'
+    end
+
   end
 end

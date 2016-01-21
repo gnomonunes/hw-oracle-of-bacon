@@ -5,7 +5,6 @@ ruby '2.2.2'
 gem 'nokogiri'
 gem 'byebug'
 gem 'activemodel', '4.2.1'
-gem 'ZenTest', '~> 4.11'
 
 group :test do
   gem 'fakeweb'
